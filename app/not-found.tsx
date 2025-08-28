@@ -1,4 +1,3 @@
-/* app/not-found.tsx */
 import type { Metadata } from "next";
 import Link from "next/link";
 import css from "./not-found.module.css";
@@ -9,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NoteHub - 404 Page Not Found",
     description: "The page you are looking for does not exist on NoteHub.",
-    url: "",
+    url: "https://08-zustand-five-rho.vercel.app/",
     images: [
       {
         url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
