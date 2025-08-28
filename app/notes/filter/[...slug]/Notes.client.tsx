@@ -1,3 +1,4 @@
+// notes/filter/[...slug]/Notes.client.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,13 +9,11 @@ import {
 } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 import { Toaster } from "react-hot-toast";
+import Link from "next/link";
 
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteList from "@/components/NoteList/NoteList";
-
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
 
 import { fetchNotes } from "@/lib/api";
 import type { FetchNotesResponse, Tag } from "@/types/note";
@@ -30,7 +29,6 @@ export default function NotesClient({ notesData, tag }: NotesClientProps) {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [debouncedQuery] = useDebounce(query, 500);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -59,9 +57,6 @@ export default function NotesClient({ notesData, tag }: NotesClientProps) {
     setPage(selectedPage);
   };
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
-
   const notesToShow = data?.notes || [];
   const showLoader = isLoading || isFetching;
 
@@ -71,10 +66,11 @@ export default function NotesClient({ notesData, tag }: NotesClientProps) {
       <main className={css.app}>
         <div className={css.toolbar}>
           <SearchBox onSearch={handleSearch} initialQuery={query} />
-          <button className={css.button} onClick={handleOpenModal}>
+          <Link href="/notes/action/create" className={css.button}>
             Create note +
-          </button>
+          </Link>
         </div>
+
         {data && data.totalPages > 1 && (
           <Pagination
             pageCount={data.totalPages}
@@ -82,15 +78,9 @@ export default function NotesClient({ notesData, tag }: NotesClientProps) {
             currentPage={page}
           />
         )}
-        
         {notesToShow.length > 0 && <NoteList notes={notesToShow} />}
         {!showLoader && notesToShow.length === 0 && <p>No notes found.</p>}
       </main>
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-          <NoteForm onClose={handleCloseModal} />
-        </Modal>
-      )}
     </div>
   );
 }
